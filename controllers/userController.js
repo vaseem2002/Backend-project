@@ -1,6 +1,49 @@
 const User = require('../models/User');
 const Product = require('../models/Product');
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     UserProfile:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: User ID
+ *         name:
+ *           type: string
+ *           description: User's name
+ *         email:
+ *           type: string
+ *           description: User's email
+ *         role:
+ *           type: string
+ *           enum: [admin, customer]
+ *           description: User role
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     UserUpdate:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           required: false
+ *         email:
+ *           type: string
+ *           required: false
+ */
+
 // Get user profile
 exports.getProfile = async (req, res) => {
   try {
