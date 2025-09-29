@@ -11,8 +11,12 @@ const options = {
     },
     servers: [
       {
-        url: process.env.BASE_URL || 'http://localhost:5000/api',
+        url: `http://localhost:${process.env.PORT || 5000}`,
         description: 'API Server'
+      },
+      {
+        url: 'https://e-commerce-backend-m0uj.onrender.com/api',
+        description: 'Production Server'
       }
     ],
     components: {
