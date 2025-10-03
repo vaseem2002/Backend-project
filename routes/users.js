@@ -12,146 +12,146 @@ const { authenticate, authorize } = require('../middleware/auth');
  *       properties:
  *         id:
  *           type: string
- *           description: User ID
- *         name:
+ *           description: Account identifier
+ *         username:
  *           type: string
- *           description: User's name
+ *           description: User display name
  *         email:
  *           type: string
- *           description: User's email
- *         role:
+ *           description: Account email
+ *         accountType:
  *           type: string
- *           enum: [admin, customer]
- *           description: User role
- *         createdAt:
+ *           enum: [administrator, shopper]
+ *           description: Account privileges
+ *         accountCreated:
  *           type: string
  *           format: date-time
- *         updatedAt:
+ *         lastUpdated:
  *           type: string
  *           format: date-time
  *       example:
- *         id: "64f1a2b3c8d9e0f1a2b3c4d5"
- *         name: "John Doe"
- *         email: "john@example.com"
- *         role: "customer"
- *         createdAt: "2024-01-15T10:30:00.000Z"
- *         updatedAt: "2024-01-15T10:30:00.000Z"
+ *         id: "65a1b2c3d4e5f6a7b8c9d0e1"
+ *         username: "Michael Chen"
+ *         email: "michael.chen@email.com"
+ *         accountType: "shopper"
+ *         accountCreated: "2024-02-20T08:15:00.000Z"
+ *         lastUpdated: "2024-02-20T08:15:00.000Z"
  * 
  *     UserUpdate:
  *       type: object
  *       properties:
- *         name:
+ *         username:
  *           type: string
- *           minLength: 2
- *           maxLength: 50
+ *           minLength: 3
+ *           maxLength: 40
  *           required: false
  *         email:
  *           type: string
  *           format: email
  *           required: false
  *       example:
- *         name: "Updated Name"
- *         email: "updated@example.com"
+ *         username: "Michael Chen Updated"
+ *         email: "michael.new@email.com"
  * 
  *     ChangePasswordRequest:
  *       type: object
  *       required:
- *         - currentPassword
- *         - newPassword
+ *         - currentPasscode
+ *         - newPasscode
  *       properties:
- *         currentPassword:
+ *         currentPasscode:
  *           type: string
- *           description: Current password
- *         newPassword:
+ *           description: Existing passcode
+ *         newPasscode:
  *           type: string
- *           minLength: 6
- *           description: New password (min 6 characters)
+ *           minLength: 8
+ *           description: New secure passcode (minimum 8 characters)
  *       example:
- *         currentPassword: "oldpassword123"
- *         newPassword: "newpassword123"
+ *         currentPasscode: "currentSecure123"
+ *         newPasscode: "newSecurePass456"
  * 
  *     DeleteAccountRequest:
  *       type: object
  *       required:
- *         - password
+ *         - passcode
  *       properties:
- *         password:
+ *         passcode:
  *           type: string
- *           description: User password for confirmation
+ *           description: Account passcode for verification
  *       example:
- *         password: "userpassword123"
+ *         passcode: "myAccountPass789"
  * 
  *     UpdateRoleRequest:
  *       type: object
  *       required:
- *         - role
+ *         - accountType
  *       properties:
- *         role:
+ *         accountType:
  *           type: string
- *           enum: [admin, customer]
- *           description: New user role
+ *           enum: [administrator, shopper]
+ *           description: New account type
  *       example:
- *         role: "admin"
+ *         accountType: "administrator"
  * 
  *     UsersResponse:
  *       type: object
  *       properties:
- *         success:
+ *         status:
  *           type: boolean
  *           example: true
- *         message:
+ *         info:
  *           type: string
- *           example: "Users retrieved successfully"
- *         data:
+ *           example: "User accounts retrieved"
+ *         result:
  *           type: object
  *           properties:
- *             users:
+ *             accounts:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/UserProfile'
- *             pagination:
+ *             navigation:
  *               type: object
  *               properties:
- *                 currentPage:
+ *                 current:
  *                   type: integer
  *                   example: 1
  *                 totalPages:
  *                   type: integer
- *                   example: 5
- *                 totalUsers:
+ *                   example: 6
+ *                 totalAccounts:
  *                   type: integer
- *                   example: 50
+ *                   example: 60
  *                 hasNext:
  *                   type: boolean
  *                   example: true
- *                 hasPrev:
+ *                 hasPrevious:
  *                   type: boolean
  *                   example: false
  * 
  *     UserResponse:
  *       type: object
  *       properties:
- *         success:
+ *         status:
  *           type: boolean
  *           example: true
- *         message:
+ *         info:
  *           type: string
- *           example: "Profile retrieved successfully"
- *         data:
+ *           example: "Account details loaded"
+ *         result:
  *           type: object
  *           properties:
- *             user:
+ *             account:
  *               $ref: '#/components/schemas/UserProfile'
  * 
  *     ErrorResponse:
  *       type: object
  *       properties:
- *         success:
+ *         status:
  *           type: boolean
  *           example: false
- *         message:
+ *         error:
  *           type: string
- *           example: "Error description"
+ *           example: "Operation failed"
  * 
  *   securitySchemes:
  *     bearerAuth:
@@ -163,47 +163,47 @@ const { authenticate, authorize } = require('../middleware/auth');
 /**
  * @swagger
  * tags:
- *   name: Users
- *   description: User management endpoints
+ *   name: Account Management
+ *   description: User account operations and administration
  */
 
 /**
  * @swagger
  * /api/users/profile:
  *   get:
- *     summary: Get user profile
- *     tags: [Users]
+ *     summary: Retrieve account information
+ *     tags: [Account Management]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Profile retrieved successfully
+ *         description: Account data retrieved
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserResponse'
  *             examples:
  *               success:
- *                 summary: Profile retrieved successfully
+ *                 summary: Account information loaded
  *                 value:
- *                   success: true
- *                   message: "Profile retrieved successfully"
- *                   data:
- *                     user:
- *                       id: "64f1a2b3c8d9e0f1a2b3c4d5"
- *                       name: "John Doe"
- *                       email: "john@example.com"
- *                       role: "customer"
- *                       createdAt: "2024-01-15T10:30:00.000Z"
- *                       updatedAt: "2024-01-15T10:30:00.000Z"
+ *                   status: true
+ *                   info: "Account details loaded successfully"
+ *                   result:
+ *                     account:
+ *                       id: "65a1b2c3d4e5f6a7b8c9d0e1"
+ *                       username: "Michael Chen"
+ *                       email: "michael.chen@email.com"
+ *                       accountType: "shopper"
+ *                       accountCreated: "2024-02-20T08:15:00.000Z"
+ *                       lastUpdated: "2024-02-20T08:15:00.000Z"
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -215,8 +215,8 @@ router.get('/profile', authenticate, userController.getProfile);
  * @swagger
  * /api/users/profile:
  *   put:
- *     summary: Update user profile
- *     tags: [Users]
+ *     summary: Modify account details
+ *     tags: [Account Management]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -226,40 +226,40 @@ router.get('/profile', authenticate, userController.getProfile);
  *           schema:
  *             $ref: '#/components/schemas/UserUpdate'
  *           examples:
- *             updateName:
- *               summary: Update user name
+ *             updateUsername:
+ *               summary: Change display name
  *               value:
- *                 name: "Updated Name"
+ *                 username: "Mike Chen"
  *             updateEmail:
- *               summary: Update user email
+ *               summary: Update email address
  *               value:
- *                 email: "newemail@example.com"
+ *                 email: "mike.chen@newemail.com"
  *             updateBoth:
  *               summary: Update both name and email
  *               value:
- *                 name: "Updated Name"
- *                 email: "newemail@example.com"
+ *                 username: "Mike Chen"
+ *                 email: "mike.chen@newemail.com"
  *     responses:
  *       200:
- *         description: Profile updated successfully
+ *         description: Account updated
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserResponse'
  *       400:
- *         description: Validation error or email already exists
+ *         description: Input validation failed or email exists
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -271,8 +271,8 @@ router.put('/profile', authenticate, userController.updateProfile);
  * @swagger
  * /api/users/change-password:
  *   post:
- *     summary: Change user password
- *     tags: [Users]
+ *     summary: Update account passcode
+ *     tags: [Account Management]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -282,45 +282,45 @@ router.put('/profile', authenticate, userController.updateProfile);
  *           schema:
  *             $ref: '#/components/schemas/ChangePasswordRequest'
  *           examples:
- *             changePassword:
- *               summary: Change password example
+ *             changePasscode:
+ *               summary: Update passcode example
  *               value:
- *                 currentPassword: "oldpassword123"
- *                 newPassword: "newpassword123"
+ *                 currentPasscode: "oldSecurePass123"
+ *                 newPasscode: "newSecurePass456"
  *     responses:
  *       200:
- *         description: Password changed successfully
+ *         description: Passcode updated
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
+ *                 status:
  *                   type: boolean
  *                   example: true
- *                 message:
+ *                 info:
  *                   type: string
- *                   example: "Password changed successfully"
+ *                   example: "Passcode changed successfully"
  *       400:
- *         description: Validation error or current password incorrect
+ *         description: Validation failed or incorrect current passcode
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
- *               incorrectPassword:
- *                 summary: Current password incorrect
+ *               wrongPasscode:
+ *                 summary: Current passcode incorrect
  *                 value:
- *                   success: false
- *                   message: "Current password is incorrect"
+ *                   status: false
+ *                   error: "The current passcode is incorrect"
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -332,8 +332,8 @@ router.post('/change-password', authenticate, userController.changePassword);
  * @swagger
  * /api/users/delete-account:
  *   delete:
- *     summary: Delete user account
- *     tags: [Users]
+ *     summary: Remove account permanently
+ *     tags: [Account Management]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -343,38 +343,38 @@ router.post('/change-password', authenticate, userController.changePassword);
  *           schema:
  *             $ref: '#/components/schemas/DeleteAccountRequest'
  *           examples:
- *             deleteAccount:
+ *             removeAccount:
  *               summary: Delete account example
  *               value:
- *                 password: "userpassword123"
+ *                 passcode: "mySecurePassword123"
  *     responses:
  *       200:
- *         description: Account deleted successfully
+ *         description: Account removed
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
+ *                 status:
  *                   type: boolean
  *                   example: true
- *                 message:
+ *                 info:
  *                   type: string
  *                   example: "Account deleted successfully"
  *       400:
- *         description: Validation error or incorrect password
+ *         description: Validation failed or incorrect passcode
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -382,14 +382,14 @@ router.post('/change-password', authenticate, userController.changePassword);
  */
 router.delete('/delete-account', authenticate, userController.deleteAccount);
 
-// Admin only routes
+// Administrator only routes
 
 /**
  * @swagger
  * /api/users:
  *   get:
- *     summary: Get all users (Admin only)
- *     tags: [Users]
+ *     summary: Retrieve all user accounts (Administrator only)
+ *     tags: [Account Management]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -405,41 +405,41 @@ router.delete('/delete-account', authenticate, userController.deleteAccount);
  *         schema:
  *           type: integer
  *           minimum: 1
- *           maximum: 100
- *           default: 10
- *         description: Number of items per page
+ *           maximum: 50
+ *           default: 15
+ *         description: Items per page
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by name or email
+ *         description: Search by username or email
  *       - in: query
- *         name: role
+ *         name: accountType
  *         schema:
  *           type: string
- *           enum: [admin, customer]
- *         description: Filter by role
+ *           enum: [administrator, shopper]
+ *         description: Filter by account type
  *     responses:
  *       200:
- *         description: Users retrieved successfully
+ *         description: Accounts retrieved
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UsersResponse'
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       403:
- *         description: Forbidden - Admin access required
+ *         description: Administrator access required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -451,8 +451,8 @@ router.get('/', authenticate, authorize('admin'), userController.getAllUsers);
  * @swagger
  * /api/users/{id}:
  *   get:
- *     summary: Get user by ID (Admin only)
- *     tags: [Users]
+ *     summary: Get specific account details (Administrator only)
+ *     tags: [Account Management]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -461,34 +461,34 @@ router.get('/', authenticate, authorize('admin'), userController.getAllUsers);
  *         required: true
  *         schema:
  *           type: string
- *         description: User ID
+ *         description: Account identifier
  *     responses:
  *       200:
- *         description: User retrieved successfully
+ *         description: Account information retrieved
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserResponse'
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       403:
- *         description: Forbidden - Admin access required
+ *         description: Administrator access required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         description: User not found
+ *         description: Account not found
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -500,8 +500,8 @@ router.get('/:id', authenticate, authorize('admin'), userController.getUserById)
  * @swagger
  * /api/users/{id}/role:
  *   put:
- *     summary: Update user role (Admin only)
- *     tags: [Users]
+ *     summary: Modify account privileges (Administrator only)
+ *     tags: [Account Management]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -510,7 +510,7 @@ router.get('/:id', authenticate, authorize('admin'), userController.getUserById)
  *         required: true
  *         schema:
  *           type: string
- *         description: User ID
+ *         description: Account identifier
  *     requestBody:
  *       required: true
  *       content:
@@ -518,53 +518,53 @@ router.get('/:id', authenticate, authorize('admin'), userController.getUserById)
  *           schema:
  *             $ref: '#/components/schemas/UpdateRoleRequest'
  *           examples:
- *             makeAdmin:
- *               summary: Promote user to admin
+ *             grantAdmin:
+ *               summary: Grant administrator access
  *               value:
- *                 role: "admin"
- *             makeCustomer:
- *               summary: Demote user to customer
+ *                 accountType: "administrator"
+ *             setShopper:
+ *               summary: Set as shopper account
  *               value:
- *                 role: "customer"
+ *                 accountType: "shopper"
  *     responses:
  *       200:
- *         description: User role updated successfully
+ *         description: Account type updated
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserResponse'
  *       400:
- *         description: Validation error or cannot modify own role
+ *         description: Validation failed or self-modification attempt
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
- *               selfModification:
- *                 summary: Cannot modify own role
+ *               selfChange:
+ *                 summary: Cannot modify own account type
  *                 value:
- *                   success: false
- *                   message: "Cannot modify your own role"
+ *                   status: false
+ *                   error: "You cannot modify your own account privileges"
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       403:
- *         description: Forbidden - Admin access required
+ *         description: Administrator access required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         description: User not found
+ *         description: Account not found
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -576,8 +576,8 @@ router.put('/:id/role', authenticate, authorize('admin'), userController.updateU
  * @swagger
  * /api/users/{id}:
  *   delete:
- *     summary: Delete user (Admin only)
- *     tags: [Users]
+ *     summary: Remove user account (Administrator only)
+ *     tags: [Account Management]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -586,53 +586,53 @@ router.put('/:id/role', authenticate, authorize('admin'), userController.updateU
  *         required: true
  *         schema:
  *           type: string
- *         description: User ID
+ *         description: Account identifier
  *     responses:
  *       200:
- *         description: User deleted successfully
+ *         description: Account removed
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
+ *                 status:
  *                   type: boolean
  *                   example: true
- *                 message:
+ *                 info:
  *                   type: string
- *                   example: "User deleted successfully"
+ *                   example: "User account deleted successfully"
  *       400:
- *         description: Cannot delete own account
+ *         description: Cannot remove own account
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
- *               selfDeletion:
+ *               selfRemoval:
  *                 summary: Cannot delete own account
  *                 value:
- *                   success: false
- *                   message: "Cannot delete your own account"
+ *                   status: false
+ *                   error: "You cannot remove your own account"
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       403:
- *         description: Forbidden - Admin access required
+ *         description: Administrator access required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         description: User not found
+ *         description: Account not found
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:

@@ -12,215 +12,215 @@ const { authenticate, authorize } = require('../middleware/auth');
  *       properties:
  *         id:
  *           type: string
- *           description: User ID
- *         name:
+ *           description: User identifier
+ *         username:
  *           type: string
- *           description: User name
+ *           description: User display name
  *         email:
  *           type: string
- *           description: User email
+ *           description: User email address
  *       example:
- *         id: "64f1a2b3c8d9e0f1a2b3c4d6"
- *         name: "Admin User"
- *         email: "admin@example.com"
+ *         id: "65a1b2c3d4e5f6a7b8c9d0e2"
+ *         username: "Store Manager"
+ *         email: "manager@store.com"
  * 
  *     Product:
  *       type: object
  *       required:
- *         - name
- *         - description
- *         - price
- *         - stock
- *         - category
- *         - imageUrl
+ *         - title
+ *         - details
+ *         - cost
+ *         - quantity
+ *         - type
+ *         - photo
  *       properties:
  *         id:
  *           type: string
- *           description: The auto-generated ID of the product
- *         name:
+ *           description: Unique product identifier
+ *         title:
  *           type: string
- *           description: Product name
- *         description:
+ *           description: Product title
+ *         details:
  *           type: string
- *           description: Detailed product description
- *         price:
+ *           description: Comprehensive product details
+ *         cost:
  *           type: number
  *           format: float
- *           description: Product price
- *         stock:
+ *           description: Product cost
+ *         quantity:
  *           type: integer
- *           description: Available stock quantity
- *         category:
+ *           description: Available item count
+ *         type:
  *           type: string
- *           description: Product category
- *         tags:
+ *           description: Product classification
+ *         labels:
  *           type: array
  *           items:
  *             type: string
- *           description: Product tags for searchability
- *         imageUrl:
+ *           description: Product labels for filtering
+ *         photo:
  *           type: string
  *           format: uri
  *           description: Product image URL
- *         createdBy:
+ *         addedBy:
  *           $ref: '#/components/schemas/User'
- *         isActive:
+ *         isAvailable:
  *           type: boolean
- *           description: Product active status
- *         createdAt:
+ *           description: Product availability status
+ *         dateAdded:
  *           type: string
  *           format: date-time
- *         updatedAt:
+ *         lastModified:
  *           type: string
  *           format: date-time
  *       example:
- *         id: "64f1a2b3c8d9e0f1a2b3c4d5"
- *         name: "iPhone 15 Pro"
- *         description: "Latest iPhone with advanced camera system"
- *         price: 999
- *         stock: 50
- *         category: "Electronics"
- *         tags: ["smartphone", "apple", "5g"]
- *         imageUrl: "https://example.com/images/iphone15.jpg"
- *         isActive: true
- *         createdBy:
- *           id: "64f1a2b3c8d9e0f1a2b3c4d6"
- *           name: "Admin User"
- *           email: "admin@example.com"
- *         createdAt: "2024-01-15T10:30:00.000Z"
- *         updatedAt: "2024-01-15T10:30:00.000Z"
+ *         id: "65a1b2c3d4e5f6a7b8c9d0e1"
+ *         title: "Samsung Galaxy S24 Ultra"
+ *         details: "Premium Android smartphone with advanced AI features and telephoto lens"
+ *         cost: 1299
+ *         quantity: 35
+ *         type: "Mobile Devices"
+ *         labels: ["android", "samsung", "5g", "stylus"]
+ *         photo: "https://cdn.store.com/images/galaxy-s24-ultra.jpg"
+ *         isAvailable: true
+ *         addedBy:
+ *           id: "65a1b2c3d4e5f6a7b8c9d0e2"
+ *           username: "Store Manager"
+ *           email: "manager@store.com"
+ *         dateAdded: "2024-03-10T14:20:00.000Z"
+ *         lastModified: "2024-03-10T14:20:00.000Z"
  * 
  *     ProductCreate:
  *       type: object
  *       required:
- *         - name
- *         - description
- *         - price
- *         - stock
- *         - category
- *         - imageUrl
+ *         - title
+ *         - details
+ *         - cost
+ *         - quantity
+ *         - type
+ *         - photo
  *       properties:
- *         name:
+ *         title:
  *           type: string
- *           minLength: 2
- *           maxLength: 100
- *         description:
+ *           minLength: 3
+ *           maxLength: 120
+ *         details:
  *           type: string
- *           minLength: 10
- *         price:
+ *           minLength: 15
+ *         cost:
  *           type: number
- *           minimum: 0
- *         stock:
+ *           minimum: 1
+ *         quantity:
  *           type: integer
  *           minimum: 0
- *         category:
+ *         type:
  *           type: string
- *         tags:
+ *         labels:
  *           type: array
  *           items:
  *             type: string
- *         imageUrl:
+ *         photo:
  *           type: string
  *           format: uri
  *       example:
- *         name: "iPhone 15 Pro"
- *         description: "Latest iPhone with advanced camera system and A17 Pro chip"
- *         price: 999
- *         stock: 50
- *         category: "Electronics"
- *         tags: ["smartphone", "apple", "5g", "premium"]
- *         imageUrl: "https://example.com/images/iphone15.jpg"
+ *         title: "Sony WH-1000XM5 Headphones"
+ *         details: "Industry-leading noise canceling wireless headphones with 30-hour battery"
+ *         cost: 399
+ *         quantity: 75
+ *         type: "Audio Equipment"
+ *         labels: ["wireless", "noise-canceling", "bluetooth", "premium"]
+ *         photo: "https://cdn.store.com/images/sony-headphones.jpg"
  * 
  *     ProductUpdate:
  *       type: object
  *       properties:
- *         name:
+ *         title:
  *           type: string
- *           minLength: 2
- *           maxLength: 100
- *         description:
+ *           minLength: 3
+ *           maxLength: 120
+ *         details:
  *           type: string
- *           minLength: 10
- *         price:
+ *           minLength: 15
+ *         cost:
  *           type: number
- *           minimum: 0
- *         stock:
+ *           minimum: 1
+ *         quantity:
  *           type: integer
  *           minimum: 0
- *         category:
+ *         type:
  *           type: string
- *         tags:
+ *         labels:
  *           type: array
  *           items:
  *             type: string
- *         imageUrl:
+ *         photo:
  *           type: string
  *           format: uri
  *       example:
- *         name: "iPhone 15 Pro Max"
- *         description: "Updated description with new features"
- *         price: 1199
- *         stock: 30
+ *         title: "Sony WH-1000XM5 Wireless Headphones"
+ *         details: "Updated model with improved noise cancellation and voice assistant"
+ *         cost: 349
+ *         quantity: 60
  * 
  *     ProductsResponse:
  *       type: object
  *       properties:
- *         success:
+ *         status:
  *           type: boolean
  *           example: true
- *         message:
+ *         info:
  *           type: string
- *           example: "Products retrieved successfully"
- *         data:
+ *           example: "Products loaded successfully"
+ *         result:
  *           type: object
  *           properties:
- *             products:
+ *             items:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
- *             pagination:
+ *             pageInfo:
  *               type: object
  *               properties:
- *                 currentPage:
+ *                 current:
  *                   type: integer
  *                   example: 1
- *                 totalPages:
+ *                 pageCount:
  *                   type: integer
- *                   example: 5
- *                 totalProducts:
+ *                   example: 8
+ *                 totalItems:
  *                   type: integer
- *                   example: 50
- *                 hasNext:
+ *                   example: 80
+ *                 nextPage:
  *                   type: boolean
  *                   example: true
- *                 hasPrev:
+ *                 previousPage:
  *                   type: boolean
  *                   example: false
  * 
  *     ProductResponse:
  *       type: object
  *       properties:
- *         success:
+ *         status:
  *           type: boolean
  *           example: true
- *         message:
+ *         info:
  *           type: string
- *           example: "Product retrieved successfully"
- *         data:
+ *           example: "Product details retrieved"
+ *         result:
  *           type: object
  *           properties:
- *             product:
+ *             item:
  *               $ref: '#/components/schemas/Product'
  * 
  *     ErrorResponse:
  *       type: object
  *       properties:
- *         success:
+ *         status:
  *           type: boolean
  *           example: false
- *         message:
+ *         error:
  *           type: string
- *           example: "Error description"
+ *           example: "Operation failed"
  * 
  *   securitySchemes:
  *     bearerAuth:
@@ -232,16 +232,16 @@ const { authenticate, authorize } = require('../middleware/auth');
 /**
  * @swagger
  * tags:
- *   name: Products
- *   description: Product management API
+ *   name: Inventory
+ *   description: Product inventory management operations
  */
 
 /**
  * @swagger
  * /api/products:
  *   get:
- *     summary: Get all products with pagination and filtering
- *     tags: [Products]
+ *     summary: Retrieve product inventory with filtering options
+ *     tags: [Inventory]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -251,60 +251,60 @@ const { authenticate, authorize } = require('../middleware/auth');
  *           type: integer
  *           minimum: 1
  *           default: 1
- *         description: Page number for pagination
+ *         description: Current page number
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
  *           minimum: 1
- *           maximum: 100
- *           default: 10
- *         description: Number of products per page
+ *           maximum: 50
+ *           default: 12
+ *         description: Items per page
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Search products by name or tags
+ *         description: Search products by title or labels
  *       - in: query
- *         name: category
+ *         name: type
  *         schema:
  *           type: string
- *         description: Filter products by category
+ *         description: Filter by product type
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
- *           enum: [name, price, createdAt, updatedAt]
- *           default: createdAt
- *         description: Field to sort by
+ *           enum: [title, cost, dateAdded, lastModified]
+ *           default: dateAdded
+ *         description: Sorting criteria
  *       - in: query
  *         name: sortOrder
  *         schema:
  *           type: string
  *           enum: [asc, desc]
  *           default: desc
- *         description: Sort order
+ *         description: Sorting direction
  *     responses:
  *       200:
- *         description: Products retrieved successfully
+ *         description: Inventory data retrieved
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ProductsResponse'
  *       400:
- *         description: Invalid query parameters
+ *         description: Invalid request parameters
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -316,8 +316,8 @@ router.get('/', authenticate, productController.getProducts);
  * @swagger
  * /api/products/{id}:
  *   get:
- *     summary: Get a single product by ID
- *     tags: [Products]
+ *     summary: Get specific product details
+ *     tags: [Inventory]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -326,16 +326,16 @@ router.get('/', authenticate, productController.getProducts);
  *         required: true
  *         schema:
  *           type: string
- *         description: Product ID
+ *         description: Product identifier
  *     responses:
  *       200:
- *         description: Product retrieved successfully
+ *         description: Product information retrieved
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ProductResponse'
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
@@ -347,7 +347,7 @@ router.get('/', authenticate, productController.getProducts);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -359,8 +359,8 @@ router.get('/:id', authenticate, productController.getProductById);
  * @swagger
  * /api/products:
  *   post:
- *     summary: Create a new product (Admin only)
- *     tags: [Products]
+ *     summary: Add new product to inventory (Manager only)
+ *     tags: [Inventory]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -370,65 +370,65 @@ router.get('/:id', authenticate, productController.getProductById);
  *           schema:
  *             $ref: '#/components/schemas/ProductCreate'
  *           examples:
- *             iPhoneExample:
- *               summary: Example for creating an iPhone product
+ *             laptopExample:
+ *               summary: Add gaming laptop
  *               value:
- *                 name: "iPhone 15 Pro"
- *                 description: "Latest iPhone with advanced camera system and A17 Pro chip"
- *                 price: 999
- *                 stock: 50
- *                 category: "Electronics"
- *                 tags: ["smartphone", "apple", "5g", "premium"]
- *                 imageUrl: "https://example.com/images/iphone15.jpg"
- *             LaptopExample:
- *               summary: Example for creating a laptop product
+ *                 title: "ASUS ROG Strix Gaming Laptop"
+ *                 details: "High-performance gaming laptop with RTX 4070 and 16GB RAM for immersive gaming"
+ *                 cost: 1799
+ *                 quantity: 15
+ *                 type: "Computers"
+ *                 labels: ["gaming", "laptop", "rtx", "gaming"]
+ *                 photo: "https://cdn.store.com/images/asus-rog-laptop.jpg"
+ *             tabletExample:
+ *               summary: Add premium tablet
  *               value:
- *                 name: "MacBook Pro 16-inch"
- *                 description: "Professional laptop with M3 Max chip for extreme performance"
- *                 price: 2499
- *                 stock: 25
- *                 category: "Computers"
- *                 tags: ["laptop", "apple", "professional"]
- *                 imageUrl: "https://example.com/images/macbookpro.jpg"
+ *                 title: "iPad Pro 12.9-inch M2"
+ *                 details: "Professional tablet with Liquid Retina XDR display and M2 chip for creative work"
+ *                 cost: 1099
+ *                 quantity: 40
+ *                 type: "Tablets"
+ *                 labels: ["apple", "tablet", "creative", "premium"]
+ *                 photo: "https://cdn.store.com/images/ipad-pro.jpg"
  *     responses:
  *       201:
- *         description: Product created successfully
+ *         description: Product added to inventory
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
+ *                 status:
  *                   type: boolean
  *                   example: true
- *                 message:
+ *                 info:
  *                   type: string
- *                   example: "Product created successfully"
- *                 data:
+ *                   example: "Product added successfully"
+ *                 result:
  *                   type: object
  *                   properties:
- *                     product:
+ *                     item:
  *                       $ref: '#/components/schemas/Product'
  *       400:
- *         description: Validation error - Invalid input data
+ *         description: Input validation failed
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       403:
- *         description: Forbidden - Admin access required
+ *         description: Manager privileges required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -440,8 +440,8 @@ router.post('/', authenticate, authorize('admin'), productController.createProdu
  * @swagger
  * /api/products/{id}:
  *   put:
- *     summary: Update a product by ID (Admin only)
- *     tags: [Products]
+ *     summary: Modify product information (Manager only)
+ *     tags: [Inventory]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -450,7 +450,7 @@ router.post('/', authenticate, authorize('admin'), productController.createProdu
  *         required: true
  *         schema:
  *           type: string
- *         description: Product ID
+ *         description: Product identifier
  *     requestBody:
  *       required: true
  *       content:
@@ -458,55 +458,55 @@ router.post('/', authenticate, authorize('admin'), productController.createProdu
  *           schema:
  *             $ref: '#/components/schemas/ProductUpdate'
  *           examples:
- *             priceUpdate:
- *               summary: Update product price and stock
+ *             discountUpdate:
+ *               summary: Apply price discount
  *               value:
- *                 price: 899
- *                 stock: 30
- *                 description: "Price dropped for limited time!"
- *             fullUpdate:
- *               summary: Full product update
+ *                 cost: 1599
+ *                 quantity: 12
+ *                 details: "Special discount for limited stock!"
+ *             featureUpdate:
+ *               summary: Update product features
  *               value:
- *                 name: "iPhone 15 Pro Max"
- *                 description: "Latest iPhone with larger display and better camera"
- *                 price: 1199
- *                 stock: 20
- *                 category: "Electronics"
- *                 tags: ["smartphone", "apple", "5g", "premium", "large-screen"]
- *                 imageUrl: "https://example.com/images/iphone15promax.jpg"
+ *                 title: "ASUS ROG Strix SCAR 16 Gaming Laptop"
+ *                 details: "Updated with 240Hz display and mechanical keyboard for competitive gaming"
+ *                 cost: 1999
+ *                 quantity: 8
+ *                 type: "Gaming Computers"
+ *                 labels: ["gaming", "laptop", "rtx-4070", "mechanical-keyboard"]
+ *                 photo: "https://cdn.store.com/images/asus-rog-scar.jpg"
  *     responses:
  *       200:
- *         description: Product updated successfully
+ *         description: Product updated
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
+ *                 status:
  *                   type: boolean
  *                   example: true
- *                 message:
+ *                 info:
  *                   type: string
- *                   example: "Product updated successfully"
- *                 data:
+ *                   example: "Product information updated"
+ *                 result:
  *                   type: object
  *                   properties:
- *                     product:
+ *                     item:
  *                       $ref: '#/components/schemas/Product'
  *       400:
- *         description: Validation error - Invalid input data
+ *         description: Invalid update data
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       403:
- *         description: Forbidden - Admin access required
+ *         description: Manager privileges required
  *         content:
  *           application/json:
  *             schema:
@@ -518,7 +518,7 @@ router.post('/', authenticate, authorize('admin'), productController.createProdu
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -530,8 +530,8 @@ router.put('/:id', authenticate, authorize('admin'), productController.updatePro
  * @swagger
  * /api/products/{id}:
  *   delete:
- *     summary: Delete a product by ID (Admin only)
- *     tags: [Products]
+ *     summary: Remove product from inventory (Manager only)
+ *     tags: [Inventory]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -540,29 +540,29 @@ router.put('/:id', authenticate, authorize('admin'), productController.updatePro
  *         required: true
  *         schema:
  *           type: string
- *         description: Product ID
+ *         description: Product identifier
  *     responses:
  *       200:
- *         description: Product deleted successfully
+ *         description: Product removed
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
+ *                 status:
  *                   type: boolean
  *                   example: true
- *                 message:
+ *                 info:
  *                   type: string
- *                   example: "Product deleted successfully"
+ *                   example: "Product removed from inventory"
  *       401:
- *         description: Unauthorized - Missing or invalid token
+ *         description: Authentication required
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       403:
- *         description: Forbidden - Admin access required
+ *         description: Manager privileges required
  *         content:
  *           application/json:
  *             schema:
@@ -574,7 +574,7 @@ router.put('/:id', authenticate, authorize('admin'), productController.updatePro
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:

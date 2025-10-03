@@ -12,53 +12,53 @@ const { authenticate } = require('../middleware/auth');
  *       properties:
  *         id:
  *           type: string
- *           description: User ID
- *         name:
+ *           description: Unique user identifier
+ *         username:
  *           type: string
- *           description: User name
+ *           description: User display name
  *         email:
  *           type: string
- *           description: User email
- *         role:
+ *           description: User email address
+ *         accountType:
  *           type: string
- *           enum: [admin, customer]
- *           description: User role
+ *           enum: [administrator, shopper]
+ *           description: User account type
  *       example:
- *         id: "64f1a2b3c8d9e0f1a2b3c4d5"
- *         name: "John Doe"
- *         email: "john@example.com"
- *         role: "customer"
+ *         id: "65a1b2c3d4e5f6a7b8c9d0e1"
+ *         username: "Sarah Johnson"
+ *         email: "sarah.johnson@email.com"
+ *         accountType: "shopper"
  * 
  *     RegisterRequest:
  *       type: object
  *       required:
- *         - name
+ *         - username
  *         - email
  *         - password
  *       properties:
- *         name:
+ *         username:
  *           type: string
- *           minLength: 2
- *           maxLength: 50
- *           description: User's full name
+ *           minLength: 3
+ *           maxLength: 30
+ *           description: User's display name
  *         email:
  *           type: string
  *           format: email
- *           description: User's email address
+ *           description: Valid email address
  *         password:
  *           type: string
- *           minLength: 6
- *           description: User's password (min 6 characters)
- *         role:
+ *           minLength: 8
+ *           description: Secure password (minimum 8 characters)
+ *         accountType:
  *           type: string
- *           enum: [admin, customer]
- *           default: customer
- *           description: User role
+ *           enum: [administrator, shopper]
+ *           default: shopper
+ *           description: Type of user account
  *       example:
- *         name: "John Doe"
- *         email: "john@example.com"
- *         password: "password123"
- *         role: "customer"
+ *         username: "Mike Wilson"
+ *         email: "mike.wilson@email.com"
+ *         password: "securePass123"
+ *         accountType: "shopper"
  * 
  *     LoginRequest:
  *       type: object
@@ -69,13 +69,13 @@ const { authenticate } = require('../middleware/auth');
  *         email:
  *           type: string
  *           format: email
- *           description: User's email address
+ *           description: Registered email address
  *         password:
  *           type: string
- *           description: User's password
+ *           description: Account password
  *       example:
- *         email: "john@example.com"
- *         password: "password123"
+ *         email: "emma.davis@email.com"
+ *         password: "myPassword456"
  * 
  *     RefreshTokenRequest:
  *       type: object
@@ -84,41 +84,41 @@ const { authenticate } = require('../middleware/auth');
  *       properties:
  *         refreshToken:
  *           type: string
- *           description: Refresh token to get new access token
+ *           description: Valid refresh token for obtaining new credentials
  *       example:
- *         refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *         refreshToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
  * 
  *     AuthResponse:
  *       type: object
  *       properties:
- *         success:
+ *         status:
  *           type: boolean
  *           example: true
  *         message:
  *           type: string
- *           example: "Login successful"
- *         data:
+ *           example: "Authentication successful"
+ *         userData:
  *           type: object
  *           properties:
  *             user:
  *               $ref: '#/components/schemas/User'
  *             accessToken:
  *               type: string
- *               description: JWT access token
+ *               description: JWT access token for API calls
  *             refreshToken:
  *               type: string
- *               description: JWT refresh token
+ *               description: JWT refresh token for token renewal
  * 
  *     RegisterResponse:
  *       type: object
  *       properties:
- *         success:
+ *         status:
  *           type: boolean
  *           example: true
  *         message:
  *           type: string
- *           example: "User registered successfully"
- *         data:
+ *           example: "Account created successfully"
+ *         userData:
  *           type: object
  *           properties:
  *             user:
@@ -133,13 +133,13 @@ const { authenticate } = require('../middleware/auth');
  *     RefreshTokenResponse:
  *       type: object
  *       properties:
- *         success:
+ *         status:
  *           type: boolean
  *           example: true
  *         message:
  *           type: string
- *           example: "Tokens refreshed successfully"
- *         data:
+ *           example: "Access tokens updated successfully"
+ *         tokens:
  *           type: object
  *           properties:
  *             accessToken:
@@ -152,22 +152,22 @@ const { authenticate } = require('../middleware/auth');
  *     LogoutResponse:
  *       type: object
  *       properties:
- *         success:
+ *         status:
  *           type: boolean
  *           example: true
  *         message:
  *           type: string
- *           example: "Logout successful"
+ *           example: "Signed out successfully"
  * 
  *     ErrorResponse:
  *       type: object
  *       properties:
- *         success:
+ *         status:
  *           type: boolean
  *           example: false
- *         message:
+ *         error:
  *           type: string
- *           example: "Error description"
+ *           example: "Operation failed"
  * 
  *   securitySchemes:
  *     bearerAuth:
@@ -179,16 +179,16 @@ const { authenticate } = require('../middleware/auth');
 /**
  * @swagger
  * tags:
- *   name: Authentication
- *   description: User authentication and authorization
+ *   name: Account Management
+ *   description: User account operations and authentication
  */
 
 /**
  * @swagger
  * /api/auth/register:
  *   post:
- *     summary: Register a new user
- *     tags: [Authentication]
+ *     summary: Create a new user account
+ *     tags: [Account Management]
  *     requestBody:
  *       required: true
  *       content:
@@ -196,60 +196,60 @@ const { authenticate } = require('../middleware/auth');
  *           schema:
  *             $ref: '#/components/schemas/RegisterRequest'
  *           examples:
- *             customerRegistration:
- *               summary: Register as a customer
+ *             shopperAccount:
+ *               summary: Create shopper account
  *               value:
- *                 name: "John Doe"
- *                 email: "john@example.com"
- *                 password: "password123"
- *                 role: "customer"
- *             adminRegistration:
- *               summary: Register as an admin
+ *                 username: "Lisa Thompson"
+ *                 email: "lisa.thompson@email.com"
+ *                 password: "shopperPass789"
+ *                 accountType: "shopper"
+ *             adminAccount:
+ *               summary: Create administrator account
  *               value:
- *                 name: "Admin User"
- *                 email: "admin@example.com"
- *                 password: "admin123"
- *                 role: "admin"
+ *                 username: "Admin Robert"
+ *                 email: "robert.admin@email.com"
+ *                 password: "adminSecure321"
+ *                 accountType: "administrator"
  *     responses:
  *       201:
- *         description: User registered successfully
+ *         description: Account created successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/RegisterResponse'
  *             examples:
  *               success:
- *                 summary: Registration successful
+ *                 summary: Account creation successful
  *                 value:
- *                   success: true
- *                   message: "User registered successfully"
- *                   data:
+ *                   status: true
+ *                   message: "Account created successfully"
+ *                   userData:
  *                     user:
- *                       id: "64f1a2b3c8d9e0f1a2b3c4d5"
- *                       name: "John Doe"
- *                       email: "john@example.com"
- *                       role: "customer"
- *                     accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
- *                     refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                       id: "65a1b2c3d4e5f6a7b8c9d0e1"
+ *                       username: "Lisa Thompson"
+ *                       email: "lisa.thompson@email.com"
+ *                       accountType: "shopper"
+ *                     accessToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+ *                     refreshToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
  *       400:
- *         description: Validation error or user already exists
+ *         description: Validation error or duplicate account
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
  *               validationError:
- *                 summary: Validation failed
+ *                 summary: Input validation failed
  *                 value:
- *                   success: false
- *                   message: "\"email\" must be a valid email"
- *               userExists:
- *                 summary: User already exists
+ *                   status: false
+ *                   error: "Email format is invalid"
+ *               duplicateAccount:
+ *                 summary: Account already exists
  *                 value:
- *                   success: false
- *                   message: "User already exists with this email"
+ *                   status: false
+ *                   error: "An account with this email already exists"
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -261,8 +261,8 @@ router.post('/register', authController.register);
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login user
- *     tags: [Authentication]
+ *     summary: Sign in to user account
+ *     tags: [Account Management]
  *     requestBody:
  *       required: true
  *       content:
@@ -270,45 +270,45 @@ router.post('/register', authController.register);
  *           schema:
  *             $ref: '#/components/schemas/LoginRequest'
  *           examples:
- *             customerLogin:
- *               summary: Customer login
+ *             shopperLogin:
+ *               summary: Shopper sign in
  *               value:
- *                 email: "customer@example.com"
- *                 password: "password123"
+ *                 email: "david.miller@email.com"
+ *                 password: "davidPass123"
  *             adminLogin:
- *               summary: Admin login
+ *               summary: Administrator sign in
  *               value:
- *                 email: "admin@example.com"
- *                 password: "admin123"
+ *                 email: "admin.jenny@email.com"
+ *                 password: "jennyAdmin456"
  *     responses:
  *       200:
- *         description: Login successful
+ *         description: Sign in successful
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AuthResponse'
  *             examples:
  *               success:
- *                 summary: Login successful
+ *                 summary: Sign in successful
  *                 value:
- *                   success: true
- *                   message: "Login successful"
- *                   data:
+ *                   status: true
+ *                   message: "Sign in successful"
+ *                   userData:
  *                     user:
- *                       id: "64f1a2b3c8d9e0f1a2b3c4d5"
- *                       name: "John Doe"
- *                       email: "john@example.com"
- *                       role: "customer"
- *                     accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
- *                     refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                       id: "65b2c3d4e5f6a7b8c9d0e1f2"
+ *                       username: "David Miller"
+ *                       email: "david.miller@email.com"
+ *                       accountType: "shopper"
+ *                     accessToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+ *                     refreshToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
  *       400:
- *         description: Validation error
+ *         description: Input validation error
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
- *         description: Invalid credentials
+ *         description: Authentication failed
  *         content:
  *           application/json:
  *             schema:
@@ -317,10 +317,10 @@ router.post('/register', authController.register);
  *               invalidCredentials:
  *                 summary: Invalid email or password
  *                 value:
- *                   success: false
- *                   message: "Invalid email or password"
+ *                   status: false
+ *                   error: "The provided credentials are incorrect"
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -332,8 +332,8 @@ router.post('/login', authController.login);
  * @swagger
  * /api/auth/refresh-token:
  *   post:
- *     summary: Refresh access token using refresh token
- *     tags: [Authentication]
+ *     summary: Renew access tokens
+ *     tags: [Account Management]
  *     requestBody:
  *       required: true
  *       content:
@@ -341,34 +341,34 @@ router.post('/login', authController.login);
  *           schema:
  *             $ref: '#/components/schemas/RefreshTokenRequest'
  *           examples:
- *             refreshToken:
+ *             tokenRefresh:
  *               summary: Refresh token example
  *               value:
- *                 refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                 refreshToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
  *     responses:
  *       200:
- *         description: Tokens refreshed successfully
+ *         description: Tokens renewed successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/RefreshTokenResponse'
  *             examples:
  *               success:
- *                 summary: Tokens refreshed
+ *                 summary: Token refresh successful
  *                 value:
- *                   success: true
- *                   message: "Tokens refreshed successfully"
- *                   data:
- *                     accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
- *                     refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                   status: true
+ *                   message: "Access tokens updated successfully"
+ *                   tokens:
+ *                     accessToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+ *                     refreshToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
  *       400:
- *         description: Validation error
+ *         description: Token validation error
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
- *         description: Invalid refresh token
+ *         description: Invalid or expired refresh token
  *         content:
  *           application/json:
  *             schema:
@@ -377,10 +377,10 @@ router.post('/login', authController.login);
  *               invalidToken:
  *                 summary: Invalid refresh token
  *                 value:
- *                   success: false
- *                   message: "Invalid refresh token"
+ *                   status: false
+ *                   error: "The provided refresh token is invalid"
  *       500:
- *         description: Internal server error
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -388,40 +388,5 @@ router.post('/login', authController.login);
  */
 router.post('/refresh-token', authController.refreshToken);
 
-/**
- * @swagger
- * /api/auth/logout:
- *   post:
- *     summary: Logout user (invalidate refresh token)
- *     tags: [Authentication]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Logout successful
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/LogoutResponse'
- *             examples:
- *               success:
- *                 summary: Logout successful
- *                 value:
- *                   success: true
- *                   message: "Logout successful"
- *       401:
- *         description: Unauthorized - Missing or invalid token
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- */
-router.post('/logout', authenticate, authController.logout);
 
 module.exports = router;
